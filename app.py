@@ -1,11 +1,11 @@
-from flask import Flask, jsonify
+from flask import Flask, jsonify, render_template
 from PIL import Image
 import piexif
 
 app = Flask(__name__)
 
-@app.route('/', methods=['GET'])
-def index():
+@app.route('/api/metadata', methods=['GET'])
+def api():
     image = Image.open('imagem_exemplo.jpg')
     exif_data = piexif.load(image.info['exif'])
 
@@ -32,6 +32,10 @@ def index():
                 tags = f"Erro ao ler tag {tag}: {e}"
             tag_list.append({'tags': tags, 'values': values})
     return jsonify(tags=tag_list)
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
