@@ -7,8 +7,14 @@
 </head>
 <body>
     <h1>Metadados</h1>
+
+    <form action="/upload" id="uploadForm" method="post" enctype="multipart/form-data">
+        <input type="file" name="image" required>
+        <input type="submit" value="Processar">
+    </form>
+
     <ul id="metadata_list">
-        <li></li>
+        <li>Carregando...</li>
     </ul>
 
     <script src="../static/script.js"></script>

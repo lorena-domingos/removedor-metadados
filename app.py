@@ -1,12 +1,29 @@
-from flask import Flask, jsonify, render_template
+from flask import Flask, jsonify, render_template, request
 from PIL import Image
 import piexif
+import os
 
 app = Flask(__name__)
+UPLOAD_FOLDER = 'uploads'
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/upload', methods=['POST'])
+def image_process():
+    file = request.files['image']
+    file_path = os.path.join(UPLOAD_FOLDER, file.filename)
+    file.save(file_path)
+    return jsonify({'filename': file.filename})
 
 @app.route('/api/metadata', methods=['GET'])
 def api():
-    image = Image.open('imagem_exemplo.jpg')
+    filename = request.args.get("filename")
+    file_path = os.path.join(UPLOAD_FOLDER, filename)
+    
+    image = Image.open(file_path)
     exif_data = piexif.load(image.info['exif'])
 
     tag_list = []
@@ -32,10 +49,6 @@ def api():
                 tags = f"Erro ao ler tag {tag}: {e}"
             tag_list.append({'tags': tags, 'values': values})
     return jsonify(tags=tag_list)
-
-@app.route('/')
-def index():
-    return render_template('index.html')
 
 if __name__ == '__main__':
     app.run(debug=True)
