@@ -1,5 +1,6 @@
 const metadata_list = document.getElementById('metadata_list');
 const form = document.getElementById('uploadForm');
+const remove_metadata = document.getElementById('remove_metadata');
 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -23,5 +24,30 @@ form.addEventListener('submit', async (e) => {
         listItem.innerHTML = `<strong>${item.tags}</strong>: ${item.values}`;
         metadata_list.append(listItem);
     });
+
+    const removeButton = document.createElement('button');
+    removeButton.innerHTML = 'Remover';
+    removeButton.disabled = false;
+    removeButton.onclick = async () => {
+        const removeFormData = new FormData();
+        removeFormData.append('filename', nomeDoArquivo);
+
+        const res3 = await fetch('/remove/metadata', {
+            method: 'POST',
+            body: removeFormData
+        });
+        const data3 = await res3.json();
+
+        if (data3.status == 'success') {
+            console.log('Metadados removidos');
+            metadata_list.innerHTML = 'Metadados removidos!';
+            remove_metadata.innerHTML = '';
+        } else {
+            console.log(`Erro ao remover: ${data3.message}`);
+            removeButton.disabled = true;
+        }
+    };
+
+    remove_metadata.append(removeButton);
 });
 

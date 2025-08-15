@@ -4,10 +4,13 @@ import piexif
 import os
 
 app = Flask(__name__)
+
 UPLOAD_FOLDER = 'uploads'
 THUMBNAIL_FOLDER = 'thumbnails'
+CLEANED_IMAGE = 'output'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(THUMBNAIL_FOLDER, exist_ok=True)
+os.makedirs(CLEANED_IMAGE, exist_ok=True)
 
 @app.route('/')
 def index():
@@ -25,8 +28,8 @@ def api():
     filename = request.args.get("filename")
     file_path = os.path.join(UPLOAD_FOLDER, filename)
     
-    image = Image.open(file_path)
-    exif_data = piexif.load(image.info['exif'])
+
+    exif_data = piexif.load(file_path)
 
     tag_list = []
 
@@ -52,5 +55,31 @@ def api():
             tag_list.append({'tags': tags, 'values': values})
     return jsonify(tags=tag_list)
 
+@app.route('/remove/metadata', methods=['POST'])
+def remove_metadata():
+    filename = request.form.get('filename')
+    
+    input_path = os.path.join(UPLOAD_FOLDER, filename)
+    
+    try:
+        exif_dict = piexif.load(input_path)
+        orientation_value = exif_dict["0th"].get(piexif.ImageIFD.Orientation)
+        new_exif = {"0th": {}, "Exif": {}, "GPS": {}, "1st": {}, "thumbnail": None}
+        
+        if orientation_value is not None:
+            new_exif["0th"][piexif.ImageIFD.Orientation] = orientation_value
+            
+        output_path = os.path.join(CLEANED_IMAGE, filename)
+        
+        image = Image.open(input_path)
+        exif_bytes = piexif.dump(new_exif)
+        image.save(output_path, exif=exif_bytes)
+        
+        return jsonify({'status': 'success', 'message': 'Metadados removidos!', 'output_file': filename})
+    
+    except Exception as e:
+        print(f"Erro ao tentar remover metadados: {e}")
+        return jsonify({'status': 'error', 'message': 'Falha ao processar a imagem.'}), 500
+    
 if __name__ == '__main__':
     app.run(debug=True)
