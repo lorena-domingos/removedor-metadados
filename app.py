@@ -5,7 +5,9 @@ import os
 
 app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
+THUMBNAIL_FOLDER = 'thumbnails'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+os.makedirs(THUMBNAIL_FOLDER, exist_ok=True)
 
 @app.route('/')
 def index():
@@ -29,7 +31,7 @@ def api():
     tag_list = []
 
     if exif_data.get('thumbnail'):
-        with open('thumbnail.jpg', 'wb+') as tb:
+        with open(f'{THUMBNAIL_FOLDER}/thumbnail.jpg', 'wb+') as tb:
             tb.write(exif_data['thumbnail'])
 
     for tag_name, info_dict in exif_data.items():
