@@ -1,13 +1,27 @@
 const metadata_list = document.getElementById('metadata_list');
 const form = document.getElementById('uploadForm');
 const remove_metadata = document.getElementById('remove_metadata');
+const extensaoPermitida = ["jpg", "jpeg"];
+
+const removeButton = document.createElement('button');
+remove_metadata.appendChild(removeButton);
+removeButton.innerHTML = 'Remover';
+removeButton.disabled = true;
 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
     const formData = new FormData(form)
     const res1 = await fetch('/upload', { method: 'POST', body: formData });
     const data1 = await res1.json();
+    console.log(data1);
     const nomeDoArquivo = data1.filename;
+    const verificarExtensao = await nomeDoArquivo.split(".").pop().toLowerCase();
+
+    if (!extensaoPermitida.includes(verificarExtensao)) {
+        alert("Arquivo com extensão inválida!");
+        removeButton.disabled = true;
+        return;
+    };
 
     const res2 = await fetch(`/api/metadata?filename=${nomeDoArquivo}`);
     const data2 = await res2.json();
@@ -17,7 +31,7 @@ form.addEventListener('submit', async (e) => {
     if (data2.tags.length === 0) {
         metadata_list.innerHTML = '<li>Nenhuma tag encontrada</li>';
         return;
-    }
+    };
 
     data2.tags.forEach(item => {
         const listItem = document.createElement('li');
@@ -25,8 +39,6 @@ form.addEventListener('submit', async (e) => {
         metadata_list.append(listItem);
     });
 
-    const removeButton = document.createElement('button');
-    removeButton.innerHTML = 'Remover';
     removeButton.disabled = false;
     removeButton.onclick = async () => {
         const removeFormData = new FormData();
@@ -38,16 +50,17 @@ form.addEventListener('submit', async (e) => {
         });
         const data3 = await res3.json();
 
+        console.log(data3);
+
         if (data3.status == 'success') {
             console.log('Metadados removidos');
             metadata_list.innerHTML = 'Metadados removidos!';
-            remove_metadata.innerHTML = '';
+            removeButton.disabled = true;
+            form.reset();
         } else {
             console.log(`Erro ao remover: ${data3.message}`);
             removeButton.disabled = true;
         }
     };
 
-    remove_metadata.append(removeButton);
 });
-

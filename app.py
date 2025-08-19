@@ -19,15 +19,27 @@ def index():
 @app.route('/upload', methods=['POST'])
 def image_process():
     file = request.files['image']
+    if not file:
+        return jsonify({'error': 'Nenhum arquivo encontrada'}), 400
+
     file_path = os.path.join(UPLOAD_FOLDER, file.filename)
-    file.save(file_path)
+
+    try:
+        file.save(file_path)
+    except PermissionError:
+        return jsonify({'error': 'Sem permissão para criar o arquivo'}), 500
+    except Exception as e:
+        return jsonify({'error': f'Erro inesperado, {e}'}), 500
+
     return jsonify({'filename': file.filename})
 
 @app.route('/api/metadata', methods=['GET'])
 def api():
     filename = request.args.get("filename")
+    if not filename:
+        print(f'Nenhuma imagem para processar')
+
     file_path = os.path.join(UPLOAD_FOLDER, filename)
-    
 
     exif_data = piexif.load(file_path)
 
@@ -58,6 +70,8 @@ def api():
 @app.route('/remove/metadata', methods=['POST'])
 def remove_metadata():
     filename = request.form.get('filename')
+    if not filename:
+        print("Imagem não carreggada")
     
     input_path = os.path.join(UPLOAD_FOLDER, filename)
     
@@ -75,7 +89,7 @@ def remove_metadata():
         exif_bytes = piexif.dump(new_exif)
         image.save(output_path, exif=exif_bytes)
         
-        return jsonify({'status': 'success', 'message': 'Metadados removidos!', 'output_file': filename})
+        return jsonify({'status': 'success', 'message': 'Metadados removidos!', 'output_file': filename}), 200
     
     except Exception as e:
         print(f"Erro ao tentar remover metadados: {e}")
