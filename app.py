@@ -16,13 +16,27 @@ os.makedirs(CLEANED_IMAGE, exist_ok=True)
 def index():
     return render_template('index.html')
 
+def image_validation():
+    image = request.files['image']
+    # print(image)
+    image_str = image.filename
+    image_name, image_ext = os.path.splitext(image_str)
+    extensions_allowed = ['jpg', 'jpeg']
+    # print(image_name)
+    # print(image_ext)
+    if image_ext[1:].lower() in extensions_allowed:
+        return image
+    else:
+        return None
+
 @app.route('/upload', methods=['POST'])
 def image_process():
-    file = request.files['image']
-    if not file:
+    file = image_validation()
+    if file is None:
         return jsonify({'error': 'Nenhum arquivo encontrada'}), 400
 
-    file_path = os.path.join(UPLOAD_FOLDER, file.filename)
+    image = file.filename
+    file_path = os.path.join(UPLOAD_FOLDER, image)
 
     try:
         file.save(file_path)
@@ -31,7 +45,7 @@ def image_process():
     except Exception as e:
         return jsonify({'error': f'Erro inesperado, {e}'}), 500
 
-    return jsonify({'filename': file.filename})
+    return jsonify({'filename': image})
 
 @app.route('/api/metadata', methods=['GET'])
 def api():

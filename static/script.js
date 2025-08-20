@@ -10,11 +10,16 @@ removeButton.disabled = true;
 
 form.addEventListener('submit', async (e) => {
     e.preventDefault();
-    const formData = new FormData(form)
-    const res1 = await fetch('/upload', { method: 'POST', body: formData });
-    const data1 = await res1.json();
-    console.log(data1);
-    const nomeDoArquivo = data1.filename;
+
+    const fileInput = form.querySelector('input[type="file"]');
+    const file = fileInput.files[0];
+
+    if (!file) {
+        alert("Nenhum arquivo selecionado!");
+        return;
+    }
+
+    const nomeDoArquivo = file.name;
     const verificarExtensao = await nomeDoArquivo.split(".").pop().toLowerCase();
 
     if (!extensaoPermitida.includes(verificarExtensao)) {
@@ -22,6 +27,12 @@ form.addEventListener('submit', async (e) => {
         removeButton.disabled = true;
         return;
     };
+    
+    const formData = new FormData(form)
+    const res1 = await fetch('/upload', { method: 'POST', body: formData });
+    const data1 = await res1.json();
+    console.log(data1);
+
 
     const res2 = await fetch(`/api/metadata?filename=${nomeDoArquivo}`);
     const data2 = await res2.json();
