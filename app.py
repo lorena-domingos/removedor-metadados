@@ -18,12 +18,9 @@ def index():
 
 def image_validation():
     image = request.files['image']
-    # print(image)
     image_str = image.filename
     image_name, image_ext = os.path.splitext(image_str)
     extensions_allowed = ['jpg', 'jpeg']
-    # print(image_name)
-    # print(image_ext)
     if image_ext[1:].lower() in extensions_allowed:
         return image
     else:

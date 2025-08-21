@@ -4,20 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Metadados</title>
+    <link rel="shortcut icon" href="../static/icons8-emoji-de-lupa-inclinada-para-a-esquerda-32.png" type="image/x-icon">
+    <link rel="stylesheet" href="../static/style.css">
 </head>
 <body>
-    <h1>Metadados</h1>
-
-    <form action="/upload" id="uploadForm" method="post" enctype="multipart/form-data">
-        <input type="file" name="image" required accept="image/jpeg">
-        <input type="submit" value="Processar">
-    </form>
+    <main>
+        <div class="content">
+            <h1>Metadados</h1>
+            <p>Ferramenta para visualizar e remover metadados de imagens JPEG.</p>
     
-    <div id="remove_metadata"></div>
-
-    <ul id="metadata_list">
-        <li>Carregando...</li>
-    </ul>
+            <form action="/upload" id="uploadForm" method="post" enctype="multipart/form-data">
+                <input type="file" name="image" required accept="image/jpeg">
+                <div class="buttons">
+                    <input type="submit" value="Processar">
+                    <div id="remove_metadata"></div>
+                </div>
+            </form>
+    
+            <ul id="metadata_list">
+                <li>Carregando...</li>
+            </ul>
+        </div>
+    </main>
 
     <script src="../static/script.js"></script>
 </body>

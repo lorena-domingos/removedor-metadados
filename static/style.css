@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+
+:root {
+    --font-family: 'Nunito Sans', sans-serif;
+    --background-color: #231942;
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-family);
+    background-color: var(--background-color);
+    color: white;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+}
+
+.content h1, p {
+    margin-bottom: 10px;
+}
+
+.content form {
+    display: flex;
+    gap: 10px;
+}
+
+.content #metadata_list {
+    list-style: none;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+.content button, input[type="file"]::file-selector-button, input[type="submit"] {
+    padding: 7px 15px;
+    background-color: #3d3e3f;
+    color: white;
+    border-radius: 0.5em;
+    border: none;
+    cursor: pointer;
+}
+
+#remove_metadata > button:disabled {
+    background-color: #616161;
+}
+
+.buttons {
+    display: flex;
+    gap: 10px;
+}
+
+@media (max-width: 768px) {
+    .content form {
+        flex-direction: column;
+        align-items: center;
+    }
+}
