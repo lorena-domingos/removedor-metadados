@@ -24,7 +24,7 @@ Com ela você pode:
 Clone o repositório:
 
 ```bash
-git clone https://github.com/seu-usuario/removedor-metadados.git
+git clone https://github.com/lorena-domingos/removedor-metadados.git
 cd removedor-metadados
 ```
 
