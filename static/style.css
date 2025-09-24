@@ -29,6 +29,7 @@ main {
     flex-direction: column;
     gap: 10px;
     text-align: center;
+    align-items: center;
 }
 
 .content h1, p {
@@ -44,6 +45,26 @@ main {
     list-style: none;
     font-weight: 600;
     margin-top: 10px;
+}
+
+#metadata_list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#metadata_list li {
+    padding: 8px 12px;
+    margin-bottom: 4px;
+    word-break: break-word;
+}
+
+#metadata_list {
+    max-height: 50vh;
+    overflow-y: auto;
 }
 
 .content button, input[type="file"]::file-selector-button, input[type="submit"] {
